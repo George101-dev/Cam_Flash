@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://b28lig4jn8d58"]
+
+[ext_resource type="Script" uid="uid://cbsdkr2yvcv8f" path="res://Cam_Flash/Scripts/pursuer.gd" id="1_pe6mq"]
+[ext_resource type="Texture2D" uid="uid://d05ywqvph5vch" path="res://Cam_Flash/Assets/Stalker_Placeholder_Sprite.png" id="1_rfihl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pe6mq"]
+atlas = ExtResource("1_rfihl")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8xl37"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pe6mq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pgopq"]
+size = Vector2(8, 20)
+
+[node name="Pursuer" type="CharacterBody2D"]
+script = ExtResource("1_pe6mq")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_8xl37")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_pgopq")

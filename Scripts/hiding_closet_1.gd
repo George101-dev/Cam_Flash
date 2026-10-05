@@ -22,8 +22,10 @@ func _process(delta: float) -> void:
 	
 
 func _on_entrance_area_area_entered(area: Area2D) -> void:
-	is_in_entrance_area = true
+	if area.name == "Hide_Area":
+		is_in_entrance_area = true
 
 
 func _on_entrance_area_area_exited(area: Area2D) -> void:
-	is_in_entrance_area = false
+	if area.name == "Hide_Area":
+		is_in_entrance_area = false
