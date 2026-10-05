@@ -1,0 +1,154 @@
+[gd_scene load_steps=20 format=3 uid="uid://cguo68vnqya25"]
+
+[ext_resource type="Texture2D" uid="uid://dxej47pgxdhms" path="res://Cam_Flash/Assets/Hiding_Spot_Closet_Sprite.png" id="1_fg7x7"]
+[ext_resource type="Script" uid="uid://dvryxyb22fth2" path="res://Cam_Flash/Scripts/hiding_closet_1.gd" id="1_n83bm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n83bm"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_br2lb"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6ig1"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qtgp4"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hgnbr"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2mt3b"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l4puk"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aqldy"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2c6i0"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_24fso"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5uhqk"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pvr3y"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eerkk"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aslfj"]
+atlas = ExtResource("1_fg7x7")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_br2lb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n83bm")
+}],
+"loop": true,
+"name": &"Closed_Empty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_br2lb")
+}],
+"loop": true,
+"name": &"Closed_Hiding",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6ig1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qtgp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hgnbr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2mt3b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4puk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aqldy")
+}],
+"loop": true,
+"name": &"Opening_Closing_Entering",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2c6i0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_24fso")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5uhqk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pvr3y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eerkk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aslfj")
+}],
+"loop": true,
+"name": &"Opening_Closing_Exiting",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p6ig1"]
+size = Vector2(18, 25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qtgp4"]
+size = Vector2(22, 30)
+
+[node name="Hiding_Closet_1" type="AnimatableBody2D"]
+script = ExtResource("1_n83bm")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_br2lb")
+animation = &"Closed_Empty"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_p6ig1")
+
+[node name="Entrance_Area" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entrance_Area"]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_qtgp4")
+debug_color = Color(0, 0.768627, 0, 0.419608)
+
+[connection signal="area_entered" from="Entrance_Area" to="." method="_on_entrance_area_area_entered"]
+[connection signal="area_exited" from="Entrance_Area" to="." method="_on_entrance_area_area_exited"]

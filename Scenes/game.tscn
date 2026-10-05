@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcwnpe0mqrx1x"]
+
+[ext_resource type="PackedScene" uid="uid://c6fl6pv33ifgg" path="res://Cam_Flash/Scenes/player_soléne.tscn" id="1_ebmjs"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Player-Soléne" parent="." instance=ExtResource("1_ebmjs")]
+position = Vector2(320, 260)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 241)
+zoom = Vector2(2.5, 2.5)
