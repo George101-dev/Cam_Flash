@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c1u4uke3hnleg"]
+[gd_scene load_steps=8 format=3 uid="uid://c1u4uke3hnleg"]
 
 [ext_resource type="Texture2D" uid="uid://4ly4ugcjx863" path="res://Cam_Flash/Assets/FA_House_Placeholder_Tileset.png" id="1_3uhc7"]
 [ext_resource type="PackedScene" uid="uid://c6fl6pv33ifgg" path="res://Cam_Flash/Scenes/player_soléne.tscn" id="2_rv40b"]
 [ext_resource type="PackedScene" uid="uid://dw45c6psefseg" path="res://Cam_Flash/Scenes/room_teleport.tscn" id="3_rv40b"]
 [ext_resource type="PackedScene" uid="uid://cguo68vnqya25" path="res://Cam_Flash/Scenes/hiding_closet_1.tscn" id="4_nljih"]
+[ext_resource type="PackedScene" uid="uid://b28lig4jn8d58" path="res://Cam_Flash/Scenes/pursuer.tscn" id="5_2of0a"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nljih"]
 texture = ExtResource("1_3uhc7")
@@ -102,3 +103,21 @@ destination = NodePath("../Room_Teleport2")
 [node name="Room_Teleport4" parent="." instance=ExtResource("3_rv40b")]
 position = Vector2(213, 264)
 rotation = -1.57911
+
+[node name="Waypoint_A" type="Node2D" parent="."]
+
+[node name="Marker2D1" type="Marker2D" parent="Waypoint_A"]
+position = Vector2(254, 223)
+
+[node name="Marker2D2" type="Marker2D" parent="Waypoint_A"]
+position = Vector2(393, 223)
+
+[node name="Marker2D3" type="Marker2D" parent="Waypoint_A"]
+position = Vector2(393, 305)
+
+[node name="Marker2D4" type="Marker2D" parent="Waypoint_A"]
+position = Vector2(254, 305)
+
+[node name="Pursuer" parent="." node_paths=PackedStringArray("waypoints_parent") instance=ExtResource("5_2of0a")]
+position = Vector2(254, 232)
+waypoints_parent = NodePath("../Waypoint_A")

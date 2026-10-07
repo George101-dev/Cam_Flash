@@ -3,6 +3,12 @@
 [ext_resource type="Script" uid="uid://c2y3uki1i0lf" path="res://Cam_Flash/Scripts/player_soléne.gd" id="1_5t1pr"]
 [ext_resource type="Texture2D" uid="uid://bnh40dum0nggc" path="res://Cam_Flash/Assets/Soléne_walking_sheet_sprite.png" id="2_x14ci"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x14ci"]
+size = Vector2(10, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bp7go"]
+size = Vector2(24, 23)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_2uoqf"]
 atlas = ExtResource("2_x14ci")
 region = Rect2(0, 0, 16, 16)
@@ -186,21 +192,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_x14ci"]
-size = Vector2(10, 8)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bp7go"]
-size = Vector2(24, 23)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jj1uo"]
 size = Vector2(16, 14)
 
 [node name="Player-Soléne" type="CharacterBody2D"]
 script = ExtResource("1_5t1pr")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_crdc8")
-animation = &"Idle_Down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
@@ -221,6 +217,10 @@ offset_top = -289.0
 offset_right = 293.0
 offset_bottom = 194.0
 color = Color(0.635294, 0.635294, 0.580392, 1)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_crdc8")
+animation = &"Idle_Down"
 
 [node name="Hide_Area" type="Area2D" parent="."]
 collision_layer = 4
