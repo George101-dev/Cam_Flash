@@ -75,13 +75,6 @@ position = Vector2(448, -168)
 [node name="Hiding_Closet_2" parent="." instance=ExtResource("4_nljih")]
 position = Vector2(231, -549)
 
-[node name="Player-Soléne" parent="." instance=ExtResource("2_rv40b")]
-position = Vector2(320, 260)
-
-[node name="Camera2D" type="Camera2D" parent="Player-Soléne"]
-position = Vector2(0, -19)
-zoom = Vector2(2.5, 2.5)
-
 [node name="Main_Room_Teleport" parent="." node_paths=PackedStringArray("destination") instance=ExtResource("3_rv40b")]
 position = Vector2(392, 195)
 destination = NodePath("../Room_Teleport")
@@ -121,3 +114,10 @@ position = Vector2(254, 305)
 [node name="Pursuer" parent="." node_paths=PackedStringArray("waypoints_parent") instance=ExtResource("5_2of0a")]
 position = Vector2(254, 232)
 waypoints_parent = NodePath("../Waypoint_A")
+
+[node name="Player-Soléne" parent="." instance=ExtResource("2_rv40b")]
+position = Vector2(320, 260)
+
+[node name="Camera2D" type="Camera2D" parent="Player-Soléne"]
+position = Vector2(0, -19)
+zoom = Vector2(2.5, 2.5)
