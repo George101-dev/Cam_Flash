@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 enum State {ROAMING, CHASING, SEARCHING, FLASHED}
 
-var Roam_Speed = 60.0
+const Roam_Speed = 80.0
 const Arrive_Distance = 4.0
 
 @export var waypoints_parent: Node2D
@@ -15,6 +15,8 @@ var waypoint_index: int = 0
 var wait_left: float = 0.0
 const FLASH_DURATION = 3.0
 var flash_left: float = 0.0
+const CHASE_SPEED = 130.0
+const LOSE_SIGHT_TIME = 3.0
 
 func _ready() -> void:
 	if waypoints_parent:

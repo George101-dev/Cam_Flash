@@ -6,6 +6,7 @@ var is_flashing: bool = false
 var can_flash: bool = true
 var is_hiding: bool = false
 var is_in_hiding_area: bool = false
+var is_busy_hiding: bool = false
 var facing_dir := Vector2(0, 1)
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera_flash: Area2D = $CameraFlash
@@ -25,7 +26,7 @@ func _physics_process(delta: float) -> void:
 	if is_hiding:
 		velocity = Vector2.ZERO
 		move_and_slide()
-		if Input.is_action_just_pressed("Interact"):
+		if Input.is_action_just_pressed("Interact") and is_busy_hiding == false:
 			stop_hiding()
 		return
 	
@@ -72,7 +73,8 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	
-	if Input.is_action_just_pressed("Interact") and is_in_hiding_area:
+		
+	if Input.is_action_just_pressed("Interact") and is_in_hiding_area and is_busy_hiding == false:
 		start_hiding()
 		return
 		
@@ -112,6 +114,7 @@ func flash_light() -> void:
 	color_rect.visible = false
 
 func start_hiding() -> void:
+	is_busy_hiding = true
 	is_hiding = true
 	can_flash = false
 	if facing_dir.x > 0:
@@ -124,14 +127,17 @@ func start_hiding() -> void:
 		animated_sprite_2d.play("Idle_Up")
 	await get_tree().create_timer(0.5).timeout
 	animated_sprite_2d.set_deferred("visible", false)
+	is_busy_hiding = false
 	
 	
 
 func stop_hiding() -> void:
+	is_busy_hiding = true
 	await get_tree().create_timer(0.5).timeout
 	is_hiding = false
 	can_flash = true
 	animated_sprite_2d.set_deferred("visible", true)
+	is_busy_hiding = false
 
 func _on_hide_area_area_entered(area: Area2D) -> void:
 	if area.name == "Entrance_Area":

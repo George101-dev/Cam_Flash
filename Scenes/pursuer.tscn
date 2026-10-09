@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b28lig4jn8d58"]
+[gd_scene load_steps=8 format=3 uid="uid://b28lig4jn8d58"]
 
 [ext_resource type="Script" uid="uid://cbsdkr2yvcv8f" path="res://Cam_Flash/Scripts/pursuer.gd" id="1_pe6mq"]
 [ext_resource type="Texture2D" uid="uid://d05ywqvph5vch" path="res://Cam_Flash/Assets/Stalker_Placeholder_Sprite.png" id="1_rfihl"]
@@ -24,6 +24,9 @@ size = Vector2(8, 14)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pe6mq"]
 size = Vector2(22, 39)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8xl37"]
+size = Vector2(44, 44)
+
 [node name="Pursuer" type="CharacterBody2D" groups=["Pursuer"]]
 collision_layer = 3
 collision_mask = 3
@@ -44,5 +47,12 @@ collision_mask = 4
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_pe6mq")
 debug_color = Color(1, 1, 1, 0.42)
+
+[node name="Line_Of_Sight" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Line_Of_Sight"]
+position = Vector2(0, 22)
+shape = SubResource("RectangleShape2D_8xl37")
+debug_color = Color(0.842906, 0.707268, 0, 0.42)
 
 [connection signal="area_entered" from="Flash_Area" to="." method="_on_flash_area_area_entered"]

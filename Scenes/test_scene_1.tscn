@@ -111,13 +111,13 @@ position = Vector2(393, 305)
 [node name="Marker2D4" type="Marker2D" parent="Waypoint_A"]
 position = Vector2(254, 305)
 
-[node name="Pursuer" parent="." node_paths=PackedStringArray("waypoints_parent") instance=ExtResource("5_2of0a")]
-position = Vector2(254, 232)
-waypoints_parent = NodePath("../Waypoint_A")
-
 [node name="Player-Soléne" parent="." instance=ExtResource("2_rv40b")]
 position = Vector2(320, 260)
 
 [node name="Camera2D" type="Camera2D" parent="Player-Soléne"]
 position = Vector2(0, -19)
 zoom = Vector2(2.5, 2.5)
+
+[node name="Pursuer" parent="." node_paths=PackedStringArray("waypoints_parent") instance=ExtResource("5_2of0a")]
+position = Vector2(254, 232)
+waypoints_parent = NodePath("../Waypoint_A")
