@@ -17,6 +17,12 @@ const FLASH_DURATION = 3.0
 var flash_left: float = 0.0
 const CHASE_SPEED = 130.0
 const LOSE_SIGHT_TIME = 3.0
+var player: Node2D = null
+var last_seen_pos: Vector2
+var lose_sight_left: float = 0.0
+@onready var line_of_sight: Area2D = $Line_Of_Sight
+var facing_dir := Vector2.DOWN
+
 
 func _ready() -> void:
 	if waypoints_parent:
@@ -29,6 +35,10 @@ func _physics_process(delta: float) -> void:
 	match state:
 		State.ROAMING:
 			roam(delta)
+			if can_see_player():
+				start_chase()
+		State.CHASING:
+			chase(delta)
 		State.FLASHED:
 			flashed(delta)
 
@@ -60,6 +70,10 @@ func move_toward_target(target: Vector2, speed: float) -> void:
 	elif abs(diff.y) > Arrive_Distance:
 		dir.y = sign(diff.y)
 
+	if dir != Vector2.ZERO:
+		facing_dir = dir
+		line_of_sight.rotation = facing_dir.angle() - Vector2.DOWN.angle()
+
 	velocity = dir * speed
 	move_and_slide()
 
@@ -78,3 +92,32 @@ func get_flashed() -> void:
 func _on_flash_area_area_entered(area: Area2D) -> void:
 	if area.name == "CameraFlash":
 		get_flashed()
+
+
+
+func _on_line_of_sight_body_entered(body: Node2D) -> void:
+	print("vision entered by: ", body.name, " in group player: ", body.is_in_group("Player"))
+	if body.is_in_group("Player"):
+		player = body
+
+func _on_line_of_sight_body_exited(body: Node2D) -> void:
+	if body == player:
+		player = null
+
+func can_see_player() -> bool:
+	return player != null and not player.is_hiding
+
+func start_chase() -> void:
+	state = State.CHASING
+	lose_sight_left = LOSE_SIGHT_TIME
+
+func chase(delta: float) -> void:
+	if can_see_player():
+		last_seen_pos = player.global_position
+		lose_sight_left = LOSE_SIGHT_TIME
+	else:
+		lose_sight_left -= delta
+		if lose_sight_left <= 0.0:
+			state = State.SEARCHING   
+			return
+	move_toward_target(last_seen_pos, CHASE_SPEED)

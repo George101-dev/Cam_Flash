@@ -28,8 +28,8 @@ size = Vector2(22, 39)
 size = Vector2(44, 44)
 
 [node name="Pursuer" type="CharacterBody2D" groups=["Pursuer"]]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_pe6mq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -49,6 +49,7 @@ shape = SubResource("RectangleShape2D_pe6mq")
 debug_color = Color(1, 1, 1, 0.42)
 
 [node name="Line_Of_Sight" type="Area2D" parent="."]
+collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Line_Of_Sight"]
 position = Vector2(0, 22)
@@ -56,3 +57,5 @@ shape = SubResource("RectangleShape2D_8xl37")
 debug_color = Color(0.842906, 0.707268, 0, 0.42)
 
 [connection signal="area_entered" from="Flash_Area" to="." method="_on_flash_area_area_entered"]
+[connection signal="body_entered" from="Line_Of_Sight" to="." method="_on_line_of_sight_body_entered"]
+[connection signal="body_exited" from="Line_Of_Sight" to="." method="_on_line_of_sight_body_exited"]
