@@ -104,7 +104,6 @@ func _on_line_of_sight_body_entered(body: Node2D) -> void:
 
 func _on_line_of_sight_body_exited(body: Node2D) -> void:
 	if body == player:
-		player = null
 		player_in_vision = false
 
 func can_see_player() -> bool:
@@ -126,4 +125,4 @@ func chase(delta: float) -> void:
 	var target := last_seen_pos
 	if not player.is_hiding:
 		target = player.global_position
-	move_toward_target(last_seen_pos, CHASE_SPEED)
+	move_toward_target(target, CHASE_SPEED)
