@@ -15,6 +15,13 @@ func _on_body_entered(body: Node2D) -> void:
 		destination.start_cooldown()
 	
 		body.global_position = destination.global_position
+	
+	if body.name == "Pursuer" and not is_cooling_down and destination != null:
+		print("Warping player safely...")
+	
+		destination.start_cooldown()
+	
+		body.global_position = destination.global_position
 		
 func start_cooldown() -> void:
 	is_cooling_down = true

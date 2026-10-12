@@ -15,11 +15,12 @@ var waypoint_index: int = 0
 var wait_left: float = 0.0
 const FLASH_DURATION = 3.0
 var flash_left: float = 0.0
-const CHASE_SPEED = 130.0
-const LOSE_SIGHT_TIME = 3.0
+const CHASE_SPEED = 125.0
+const LOSE_SIGHT_TIME = 5.0
 var player: Node2D = null
 var last_seen_pos: Vector2
 var lose_sight_left: float = 0.0
+var player_in_vision := false
 @onready var line_of_sight: Area2D = $Line_Of_Sight
 var facing_dir := Vector2.DOWN
 
@@ -99,13 +100,15 @@ func _on_line_of_sight_body_entered(body: Node2D) -> void:
 	print("vision entered by: ", body.name, " in group player: ", body.is_in_group("Player"))
 	if body.is_in_group("Player"):
 		player = body
+		player_in_vision = true
 
 func _on_line_of_sight_body_exited(body: Node2D) -> void:
 	if body == player:
 		player = null
+		player_in_vision = false
 
 func can_see_player() -> bool:
-	return player != null and not player.is_hiding
+	return player != null and player_in_vision and not player.is_hiding
 
 func start_chase() -> void:
 	state = State.CHASING
@@ -118,6 +121,9 @@ func chase(delta: float) -> void:
 	else:
 		lose_sight_left -= delta
 		if lose_sight_left <= 0.0:
-			state = State.SEARCHING   
+			state = State.ROAMING
 			return
+	var target := last_seen_pos
+	if not player.is_hiding:
+		target = player.global_position
 	move_toward_target(last_seen_pos, CHASE_SPEED)
