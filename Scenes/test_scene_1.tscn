@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c1u4uke3hnleg"]
+[gd_scene load_steps=9 format=3 uid="uid://c1u4uke3hnleg"]
 
 [ext_resource type="Texture2D" uid="uid://4ly4ugcjx863" path="res://Cam_Flash/Assets/FA_House_Placeholder_Tileset.png" id="1_3uhc7"]
 [ext_resource type="PackedScene" uid="uid://c6fl6pv33ifgg" path="res://Cam_Flash/Scenes/player_soléne.tscn" id="2_rv40b"]
@@ -62,6 +62,8 @@ texture = ExtResource("1_3uhc7")
 physics_layer_0/collision_layer = 3
 sources/1 = SubResource("TileSetAtlasSource_nljih")
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_2of0a"]
+
 [node name="TestScene1" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -121,3 +123,6 @@ zoom = Vector2(2.5, 2.5)
 [node name="Pursuer" parent="." node_paths=PackedStringArray("waypoints_parent") instance=ExtResource("5_2of0a")]
 position = Vector2(254, 232)
 waypoints_parent = NodePath("../Waypoint_A")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_2of0a")

@@ -22,6 +22,7 @@ var last_seen_pos: Vector2
 var lose_sight_left: float = 0.0
 var player_in_vision := false
 @onready var line_of_sight: Area2D = $Line_Of_Sight
+@onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 var facing_dir := Vector2.DOWN
 
 
@@ -78,6 +79,13 @@ func move_toward_target(target: Vector2, speed: float) -> void:
 	velocity = dir * speed
 	move_and_slide()
 
+func move_along_path(target: Vector2, speed: float) -> void:
+	navigation_agent_2d.target_position = target
+	var next := navigation_agent_2d.get_next_path_position()
+	if next.distance_to(global_position) < Arrive_Distance:
+		next = target
+	move_toward_target(next, speed)
+
 func flashed(delta: float) -> void:
 	velocity = Vector2.ZERO
 	move_and_slide()
@@ -125,4 +133,4 @@ func chase(delta: float) -> void:
 	var target := last_seen_pos
 	if not player.is_hiding:
 		target = player.global_position
-	move_toward_target(target, CHASE_SPEED)
+	move_along_path(target, CHASE_SPEED)
