@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c1u4uke3hnleg"]
+[gd_scene load_steps=8 format=3 uid="uid://c1u4uke3hnleg"]
 
 [ext_resource type="Texture2D" uid="uid://4ly4ugcjx863" path="res://Cam_Flash/Assets/FA_House_Placeholder_Tileset.png" id="1_3uhc7"]
 [ext_resource type="PackedScene" uid="uid://c6fl6pv33ifgg" path="res://Cam_Flash/Scenes/player_soléne.tscn" id="2_rv40b"]
@@ -62,11 +62,6 @@ texture = ExtResource("1_3uhc7")
 physics_layer_0/collision_layer = 3
 sources/1 = SubResource("TileSetAtlasSource_nljih")
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_2of0a"]
-vertices = PackedVector2Array(432, 336, 208, 336, 208, 192, 432, 192, 459, -155, 459, -160, 480, -160, 480, -64, 400, -64, 437, -155, 400, -48, 384, -48, 384, -64, 304, -64, 304, -160, 437, -160)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6, 7), PackedInt32Array(4, 7, 8, 9), PackedInt32Array(8, 10, 11, 12), PackedInt32Array(12, 13, 14, 15, 9), PackedInt32Array(12, 9, 8)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(198, 346, 198, 182, 442, 182, 442, 346), PackedVector2Array(294, -54, 374, -54, 374, -38, 410, -38, 410, -54, 490, -54, 490, -170, 449, -170, 449, -165, 447, -165, 447, -170, 294, -170)])
-
 [node name="TestScene1" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -126,6 +121,3 @@ zoom = Vector2(2.5, 2.5)
 [node name="Pursuer" parent="." node_paths=PackedStringArray("waypoints_parent") instance=ExtResource("5_2of0a")]
 position = Vector2(254, 232)
 waypoints_parent = NodePath("../Waypoint_A")
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
-navigation_polygon = SubResource("NavigationPolygon_2of0a")
