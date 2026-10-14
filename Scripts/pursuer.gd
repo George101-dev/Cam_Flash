@@ -83,14 +83,17 @@ func move_toward_target(target: Vector2, speed: float) -> void:
 func flashed(delta: float) -> void:
 	velocity = Vector2.ZERO
 	move_and_slide()
+	record_crumb()   # keep tracking the player while frozen
 	flash_left -= delta
 	if flash_left <= 0.0:
-		state = State.ROAMING
+		state = State.CHASING
+		lose_sight_left = LOSE_SIGHT_TIME
 
 func get_flashed() -> void:
+	if state == State.ROAMING:
+		trail.clear()
 	state = State.FLASHED
 	flash_left = FLASH_DURATION
-	print("Was flashed!")
 
 func _on_flash_area_area_entered(area: Area2D) -> void:
 	if area.name == "CameraFlash":
@@ -116,23 +119,26 @@ func start_chase() -> void:
 	lose_sight_left = LOSE_SIGHT_TIME
 	trail.clear()
 
+func record_crumb() -> void:
+	if player == null or player.is_hiding:
+		return
+	if trail.is_empty() or trail.back().distance_to(player.global_position) > CRUMB_SPACING:
+		trail.append(player.global_position)
+
 func chase(delta: float) -> void:
-	# 1. lose-sight timer
 	if can_see_player():
 		lose_sight_left = LOSE_SIGHT_TIME
 	else:
 		lose_sight_left -= delta
 		if lose_sight_left <= 0.0:
-			trail.clear()
-			state = State.ROAMING
+			end_chase()
 			return
 
-	# 2. drop a crumb where the player is
-	if not player.is_hiding:
-		if trail.is_empty() or trail.back().distance_to(player.global_position) > CRUMB_SPACING:
-			trail.append(player.global_position)
+	record_crumb()
 
-	# 3. walk the trail
+	while not trail.is_empty() and global_position.distance_to(trail[0]) <= Arrive_Distance * 1.5:
+		trail.pop_front()
+
 	if trail.is_empty():
 		if can_see_player():
 			move_toward_target(player.global_position, CHASE_SPEED)
@@ -141,11 +147,25 @@ func chase(delta: float) -> void:
 			move_and_slide()
 		return
 
-	if global_position.distance_to(trail[0]) <= Arrive_Distance * 1.5:
-		trail.pop_front()
-		return
 	move_toward_target(trail[0], CHASE_SPEED)
 
+
+func end_chase() -> void:
+	print("chase ended")
+	trail.clear()
+	state = State.ROAMING
+	waypoint_index = closest_waypoint_index()
+	wait_left = 0.0
+
+func closest_waypoint_index() -> int:
+	var best := 0
+	var best_dist := INF
+	for i in waypoints.size():
+		var d := global_position.distance_squared_to(waypoints[i])
+		if d < best_dist:
+			best_dist = d
+			best = i
+	return best
 
 func player_used_door(door: Area2D) -> void:
 	if state == State.CHASING:
