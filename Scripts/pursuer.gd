@@ -4,26 +4,27 @@ extends CharacterBody2D
 enum State {ROAMING, CHASING, SEARCHING, FLASHED}
 
 const Roam_Speed = 80.0
+const CHASE_SPEED = 125.0
 const Arrive_Distance = 4.0
+const FLASH_DURATION = 3.0
+const LOSE_SIGHT_TIME = 5.0
+const CRUMB_SPACING = 8.0
 
 @export var waypoints_parent: Node2D
 @export var wait_time: float = 1.5
+
+@onready var line_of_sight: Area2D = $Line_Of_Sight
 
 var state: State = State.ROAMING
 var waypoints: Array[Vector2] = []
 var waypoint_index: int = 0
 var wait_left: float = 0.0
-const FLASH_DURATION = 3.0
 var flash_left: float = 0.0
-const CHASE_SPEED = 125.0
-const LOSE_SIGHT_TIME = 5.0
-var player: Node2D = null
-var last_seen_pos: Vector2
 var lose_sight_left: float = 0.0
+var player: Node2D = null
 var player_in_vision := false
-@onready var line_of_sight: Area2D = $Line_Of_Sight
-@onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 var facing_dir := Vector2.DOWN
+var trail: Array[Vector2] = []
 
 
 func _ready() -> void:
@@ -31,7 +32,6 @@ func _ready() -> void:
 		for child in waypoints_parent.get_children():
 			if child is Marker2D:
 				waypoints.append(child.global_position)
-	print("waypoints found: ", waypoints.size(), " parent: ", waypoints_parent)
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -47,7 +47,7 @@ func _physics_process(delta: float) -> void:
 func roam(delta: float) -> void:
 	if waypoints.is_empty():
 		return
-	
+
 	if wait_left > 0.0:
 		wait_left -= delta
 		velocity = Vector2.ZERO
@@ -79,12 +79,6 @@ func move_toward_target(target: Vector2, speed: float) -> void:
 	velocity = dir * speed
 	move_and_slide()
 
-func move_along_path(target: Vector2, speed: float) -> void:
-	navigation_agent_2d.target_position = target
-	var next := navigation_agent_2d.get_next_path_position()
-	if next.distance_to(global_position) < Arrive_Distance:
-		next = target
-	move_toward_target(next, speed)
 
 func flashed(delta: float) -> void:
 	velocity = Vector2.ZERO
@@ -120,17 +114,44 @@ func can_see_player() -> bool:
 func start_chase() -> void:
 	state = State.CHASING
 	lose_sight_left = LOSE_SIGHT_TIME
+	trail.clear()
 
 func chase(delta: float) -> void:
+	# 1. lose-sight timer
 	if can_see_player():
-		last_seen_pos = player.global_position
 		lose_sight_left = LOSE_SIGHT_TIME
 	else:
 		lose_sight_left -= delta
 		if lose_sight_left <= 0.0:
+			trail.clear()
 			state = State.ROAMING
 			return
-	var target := last_seen_pos
+
+	# 2. drop a crumb where the player is
 	if not player.is_hiding:
-		target = player.global_position
-	move_along_path(target, CHASE_SPEED)
+		if trail.is_empty() or trail.back().distance_to(player.global_position) > CRUMB_SPACING:
+			trail.append(player.global_position)
+
+	# 3. walk the trail
+	if trail.is_empty():
+		if can_see_player():
+			move_toward_target(player.global_position, CHASE_SPEED)
+		else:
+			velocity = Vector2.ZERO
+			move_and_slide()
+		return
+
+	if global_position.distance_to(trail[0]) <= Arrive_Distance * 1.5:
+		trail.pop_front()
+		return
+	move_toward_target(trail[0], CHASE_SPEED)
+
+
+func player_used_door(door: Area2D) -> void:
+	if state == State.CHASING:
+		trail.clear()
+		trail.append(door.global_position)
+
+func warped() -> void:
+	if not trail.is_empty():
+		trail.pop_front()

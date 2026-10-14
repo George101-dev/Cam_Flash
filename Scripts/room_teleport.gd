@@ -9,19 +9,16 @@ func _ready() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.name == "Player-Soléne" and not is_cooling_down and destination != null:
-		print("Warping player safely...")
-	
+	if is_cooling_down or destination == null:
+		return
+	if body.is_in_group("Player"):
 		destination.start_cooldown()
-	
 		body.global_position = destination.global_position
-	
-	if body.name == "Pursuer" and not is_cooling_down and destination != null:
-		print("Warping player safely...")
-	
+		get_tree().call_group("Pursuer", "player_used_door", self)
+	elif body.is_in_group("Pursuer"):
 		destination.start_cooldown()
-	
 		body.global_position = destination.global_position
+		body.warped()
 		
 func start_cooldown() -> void:
 	is_cooling_down = true

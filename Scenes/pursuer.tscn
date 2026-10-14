@@ -56,10 +56,6 @@ position = Vector2(0, 22)
 shape = SubResource("RectangleShape2D_8xl37")
 debug_color = Color(0.842906, 0.707268, 0, 0.42)
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-path_desired_distance = 4.0
-target_desired_distance = 4.0
-
 [connection signal="area_entered" from="Flash_Area" to="." method="_on_flash_area_area_entered"]
 [connection signal="body_entered" from="Line_Of_Sight" to="." method="_on_line_of_sight_body_entered"]
 [connection signal="body_exited" from="Line_Of_Sight" to="." method="_on_line_of_sight_body_exited"]
