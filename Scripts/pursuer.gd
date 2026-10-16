@@ -25,9 +25,6 @@ var player: Node2D = null
 var player_in_vision := false
 var facing_dir := Vector2.DOWN
 var trail: Array[Vector2] = []
-var frozen_time := 0.0
-var freeze_logged := false
-var last_pos := Vector2.ZERO
 var blocked_time := 0.0
 var chase_last_pos := Vector2.ZERO
 
@@ -38,19 +35,6 @@ func _ready() -> void:
 			if child is Marker2D:
 				waypoints.append(child.global_position)
 				
-func debug_freeze(delta: float) -> void:
-	if state != State.FLASHED and global_position.distance_to(last_pos) < 0.1:
-		frozen_time += delta
-		if frozen_time > 2.0 and not freeze_logged:
-			freeze_logged = true
-			print("FROZEN in ", State.keys()[state], " | pos ", global_position, " | trail ", trail.size(), " | waypoints ", waypoints.size())
-			for i in get_slide_collision_count():
-				var c := get_slide_collision(i)
-				print("   touching ", c.get_collider(), " normal ", c.get_normal())
-	else:
-		frozen_time = 0.0
-		freeze_logged = false
-	last_pos = global_position
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -62,7 +46,6 @@ func _physics_process(delta: float) -> void:
 			chase(delta)
 		State.FLASHED:
 			flashed(delta)
-	debug_freeze(delta)
 
 func roam(delta: float) -> void:
 	if waypoints.is_empty():
@@ -141,6 +124,7 @@ func can_see_player() -> bool:
 func start_chase() -> void:
 	state = State.CHASING
 	lose_sight_left = LOSE_SIGHT_TIME
+	blocked_time = 0.0
 	trail.clear()
 
 func record_crumb() -> void:
@@ -172,7 +156,7 @@ func chase(delta: float) -> void:
 		return
 	if global_position.distance_to(chase_last_pos) < 0.2:
 		blocked_time += delta
-		if blocked_time > 1.0:
+		if blocked_time > 0.1:
 			print("skipping unreachable crumb ", trail[0], " from ", global_position)
 			trail.pop_front()
 			blocked_time = 0.0
