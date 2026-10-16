@@ -25,6 +25,11 @@ var player: Node2D = null
 var player_in_vision := false
 var facing_dir := Vector2.DOWN
 var trail: Array[Vector2] = []
+var frozen_time := 0.0
+var freeze_logged := false
+var last_pos := Vector2.ZERO
+var blocked_time := 0.0
+var chase_last_pos := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -32,6 +37,20 @@ func _ready() -> void:
 		for child in waypoints_parent.get_children():
 			if child is Marker2D:
 				waypoints.append(child.global_position)
+				
+func debug_freeze(delta: float) -> void:
+	if state != State.FLASHED and global_position.distance_to(last_pos) < 0.1:
+		frozen_time += delta
+		if frozen_time > 2.0 and not freeze_logged:
+			freeze_logged = true
+			print("FROZEN in ", State.keys()[state], " | pos ", global_position, " | trail ", trail.size(), " | waypoints ", waypoints.size())
+			for i in get_slide_collision_count():
+				var c := get_slide_collision(i)
+				print("   touching ", c.get_collider(), " normal ", c.get_normal())
+	else:
+		frozen_time = 0.0
+		freeze_logged = false
+	last_pos = global_position
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -43,6 +62,7 @@ func _physics_process(delta: float) -> void:
 			chase(delta)
 		State.FLASHED:
 			flashed(delta)
+	debug_freeze(delta)
 
 func roam(delta: float) -> void:
 	if waypoints.is_empty():
@@ -67,14 +87,18 @@ func move_toward_target(target: Vector2, speed: float) -> void:
 	var diff := target - global_position
 	var dir := Vector2.ZERO
 
-	if abs(diff.x) > Arrive_Distance:
-		dir.x = sign(diff.x)
-	elif abs(diff.y) > Arrive_Distance:
-		dir.y = sign(diff.y)
+	var x_step := Vector2(sign(diff.x), 0)
+	var y_step := Vector2(0, sign(diff.y))
+
+	if abs(diff.x) > Arrive_Distance and not test_move(global_transform, x_step * 3.0):
+		dir = x_step
+	elif abs(diff.y) > Arrive_Distance and not test_move(global_transform, y_step * 3.0):
+		dir = y_step
 
 	if dir != Vector2.ZERO:
 		facing_dir = dir
 		line_of_sight.rotation = facing_dir.angle() - Vector2.DOWN.angle()
+		
 
 	velocity = dir * speed
 	move_and_slide()
@@ -146,7 +170,16 @@ func chase(delta: float) -> void:
 			velocity = Vector2.ZERO
 			move_and_slide()
 		return
-
+	if global_position.distance_to(chase_last_pos) < 0.2:
+		blocked_time += delta
+		if blocked_time > 1.0:
+			print("skipping unreachable crumb ", trail[0], " from ", global_position)
+			trail.pop_front()
+			blocked_time = 0.0
+			return
+	else:
+		blocked_time = 0.0
+	chase_last_pos = global_position
 	move_toward_target(trail[0], CHASE_SPEED)
 
 
